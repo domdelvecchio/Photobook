@@ -4,11 +4,16 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ConnectionStrings__SqlConnection=Server=photobook.db;Database=photobook_db;User Id=sa;Password=Taggia42!
-      - ConnectionStrings__AzureStorageConnection=${STORAGEACCOUNTCONNECTION}
+      - ConnectionStrings__AzureStorageConnection=DefaultEndpointsProtocol=https;AccountName=storagetelemetrydom;AccountKey=e8qNpP8+ZVnKipSHKbToNN0a4CrMucF1XpcWK+iKHdcrM6Za1M883++HZGV0x5ie49ylf+vgnmNURVGy/BQNCQ==;EndpointSuffix=core.windows.net
       - AppSettings__ContainerName=attachments
-      - AppSettings__CognitiveServicesKey=${COGNITIVESERVICESKEY}
-      - AppSettings__CognitiveServicesEndpoint=${COGNITIVESERVICESENDPOINT}
-      - AppSettings__OtelEndpoint=${OTELENDPOINT}
+      - AppSettings__CognitiveServicesKey=06fb86e7415c457ebc6227c696c7f6aa
+      - AppSettings__CognitiveServicesEndpoint=https://cogniticetelemetrydom.cognitiveservices.azure.com/
+      - AppSettings__OtelEndpoint=https://localhost:4317
+      #- ConnectionStrings__AzureStorageConnection=${STORAGEACCOUNTCONNECTION}
+      #- AppSettings__ContainerName=attachments
+      #- AppSettings__CognitiveServicesKey=${COGNITIVESERVICESKEY}
+      #- AppSettings__CognitiveServicesEndpoint=${COGNITIVESERVICESENDPOINT}
+      #- AppSettings__OtelEndpoint=${OTELENDPOINT}
     ports:
       - "8081:80"
       - "44328:443"
