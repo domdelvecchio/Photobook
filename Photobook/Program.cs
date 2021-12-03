@@ -16,7 +16,7 @@ const string MeterName = "ComputerVision";
 var source = new ActivitySource(SourceName);
 
 // This is required if the collector doesn't expose an https endpoint
-AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
+//AppContext.SetSwitch("System.Net.Http.SocketsHttpHandler.Http2UnencryptedSupport", true);
 
 var builder = WebApplication.CreateBuilder(args);
 

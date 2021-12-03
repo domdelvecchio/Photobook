@@ -4,11 +4,11 @@ services:
       - ASPNETCORE_ENVIRONMENT=Development
       - ASPNETCORE_URLS=https://+:443;http://+:80
       - ConnectionStrings__SqlConnection=Server=photobook.db;Database=photobook_db;User Id=sa;Password=Taggia42!
-      - ConnectionStrings__AzureStorageConnection=DefaultEndpointsProtocol=https;AccountName=storagetelemetrydom;AccountKey=e8qNpP8+ZVnKipSHKbToNN0a4CrMucF1XpcWK+iKHdcrM6Za1M883++HZGV0x5ie49ylf+vgnmNURVGy/BQNCQ==;EndpointSuffix=core.windows.net
+      - ConnectionStrings__AzureStorageConnection=DefaultEndpointsProtocol=https;AccountName=satelemetrydom;AccountKey=kLPYHtaddlQzzmor/LCWiXWSMJ/pxq1tTHEx8v3ofJqwwXp0qZmCpp09KvV2lpW0fHVIkIAKyzFjot42l4xr7A==;EndpointSuffix=core.windows.net
       - AppSettings__ContainerName=attachments
-      - AppSettings__CognitiveServicesKey=06fb86e7415c457ebc6227c696c7f6aa
-      - AppSettings__CognitiveServicesEndpoint=https://cogniticetelemetrydom.cognitiveservices.azure.com/
-      - AppSettings__OtelEndpoint=https://localhost:4317
+      - AppSettings__CognitiveServicesKey=cbf85f9b5f5546c298ee5c618b55e5f1
+      - AppSettings__CognitiveServicesEndpoint=https://cogntelemetrydom.cognitiveservices.azure.com/
+      - AppSettings__OtelEndpoint=http://otel:4317
       #- ConnectionStrings__AzureStorageConnection=${STORAGEACCOUNTCONNECTION}
       #- AppSettings__ContainerName=attachments
       #- AppSettings__CognitiveServicesKey=${COGNITIVESERVICESKEY}

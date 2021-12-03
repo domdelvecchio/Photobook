@@ -3,12 +3,12 @@ receivers:
     protocols:
       grpc:
 
-exporters:
-  zipkin:
-    endpoint: "http://localhost:9411/api/v2/spans"
 #exporters:
 #  zipkin:
-#    endpoint: "http://zipkin:9411/api/v2/spans"
+#    endpoint: "http://localhost:9411/api/v2/spans"
+exporters:
+  zipkin:
+    endpoint: "http://zipkin:9411/api/v2/spans"
 
   prometheus:
     endpoint: "0.0.0.0:8889"
