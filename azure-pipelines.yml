@@ -1,0 +1,126 @@
+# Starter pipeline
+# Start with a minimal pipeline that you can customize to build and deploy your code.
+# Add steps that build, run tests, deploy, and more:
+# https://aka.ms/yaml
+
+trigger:
+- master
+
+pool:
+  name: TFSTesting
+
+stages:
+
+
+  - stage: DeploymentTest
+    jobs:
+      - deployment: DTest
+        environment: ArekZTest
+        strategy:
+         runOnce:
+           deploy:
+            steps:
+            - task: PowerShell@2            
+              inputs:
+                targetType: 'inline'
+                script: |
+                  # Write your PowerShell commands here.
+
+                  Write-Host "Hello World"
+
+  - stage: ProdApproval
+    dependsOn: DeploymentTest
+    jobs:
+      - job: Promotion
+        pool: server
+        steps:
+        - task: ManualValidation@0
+          name: Promote
+          timeoutInMinutes: 1          
+          inputs:
+            instructions: 'Promote version as production release candidate'
+            notifyUsers: ''
+            onTimeout: resume
+      - job: PromotionCheck
+        dependsOn: Promotion
+        steps:
+        - task: PowerShell@2
+          name: PromoStep
+          
+          inputs:
+            targetType: 'inline'
+            script: |
+              $BuildTimelineURL = "$(System.CollectionUri)/$(System.TeamProject)/_apis/build/builds/$(Build.BuildID)/timeline?api-version=6.0"
+
+              Write-Output BuildTimelineURL
+              $headers =   @{ "Authorization" = "Bearer $(System.AccessToken)" }
+
+              $stageIDRawResponse = Invoke-WebRequest -UseBasicParsing $BuildTimelineURL -Headers $headers
+              Write-Output "T1 OK"
+              $stage = ($stageIDRawResponse.Content | ConvertFrom-Json).records | where name -eq "$(System.StageName)"
+
+              $payload = @"
+              {
+                "contributionIds": [
+                  "ms.vss-build-web.checks-panel-data-provider"
+                ],
+                "dataProviderContext": {
+                  "properties": {
+                    "buildId": "$(Build.BuildID)",
+                    "stageIds": "$($stage.Id)",
+                    "checkListItemType": 2,
+                    "sourcePage": {
+                      "url": "$(System.CollectionUri)/$(System.TeamProject)/_build/results?buildId=$(Build.BuildID)&view=results",
+                      "routeId": "ms.vss-build-web.ci-results-hub-route",
+                      "routeValues": {
+                        "project": "$(System.TeamProject)",
+                        "viewname": "build-results",
+                        "controller": "ContributedPage",
+                        "action": "Execute"					
+                      }
+                    }
+                  }
+                }
+              }
+              "@
+
+              $buildDetailsURL = "$(System.CollectionUri)/_apis/Contribution/HierarchyQuery/project/$(System.TeamProject)?api-version=6.1-preview.1"
+              Write-Output $buildDetailsURL
+                                                                              
+              $interventionRawResponse  = Invoke-WebRequest -UseBasicParsing $buildDetailsURL -Method Post -Body $payload -ContentType "application/json" -Headers $headers
+
+              $interventionComment = ($interventionRawResponse.Content | ConvertFrom-Json).dataProviders.'ms.vss-build-web.checks-panel-data-provider'.manualValidations.steps[0].comment
+              Write-Output "Res: $interventionComment"
+              Write-Host "##vso[task.setvariable variable=PromotionResult;isoutput=true]$interventionComment"
+
+  - stage: DeploymentProdd
+    displayName: "Production Deployment"
+    dependsOn: ProdApproval
+    condition: eq( dependencies.ProdApproval.outputs['PromotionCheck.PromoStep.PromotionResult'], 'yes')
+    variables:
+#just an example how to use it in variables as syntaxt is a bit different
+      MyVar: $[ stageDependencies.ProdApproval.PromotionCheck.outputs['PromoStep.PromotionResult'] ]
+    jobs:
+#just an example how to show that passing variables works here
+      - job: LAL
+        steps:
+          - task: PowerShell@2
+            inputs:
+              targetType: 'inline'
+              script: |
+                # Write your PowerShell commands here.
+                Write-Output "Final: $(MyVar)"
+         
+      - deployment: DUAT
+        environment: ArekZUAT
+        strategy:
+          runOnce:
+            deploy:
+              steps:
+              - task: PowerShell@2
+                inputs:
+                  targetType: 'inline'
+                  script: |
+                    # Write your PowerShell commands here.
+
+                    Write-Host "Hello World"
