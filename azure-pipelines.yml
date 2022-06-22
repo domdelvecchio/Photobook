@@ -7,7 +7,7 @@ trigger:
 - master
 
 pool:
-  name: TFSTesting
+  name: default
 
 stages:
 
