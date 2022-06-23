@@ -6,9 +6,9 @@
 trigger:
 - master
 
-pool:
-  name: server
-  vmImage: windows
+# pool:
+#   name: server
+#   vmImage: windows
 
 stages:
 
@@ -33,7 +33,7 @@ stages:
     dependsOn: DeploymentTest
     jobs:
       - job: Promotion
-        pool: server
+        #pool: server
         steps:
         - task: ManualValidation@0
           name: Promote
