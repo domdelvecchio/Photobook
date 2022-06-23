@@ -33,7 +33,6 @@ stages:
     dependsOn: DeploymentTest
     jobs:
       - job: Promotion
-        #pool: server
         steps:
         - task: ManualValidation@0
           name: Promote
